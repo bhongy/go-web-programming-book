@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 )
 
@@ -16,6 +17,8 @@ func main() {
 		Addr:    "localhost:8080",
 		Handler: mux,
 	}
+
+	log.Println("Server is running on port: 8080")
 	server.ListenAndServe()
 }
 
