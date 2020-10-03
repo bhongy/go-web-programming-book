@@ -6,3 +6,11 @@ services:
       - ..:/workspaces/go-web-programming-book:delegated
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
+    env_file: .env
+    depends_on:
+      - database
+  database:
+    image: postgres:12.4-alpine
+    restart: unless-stopped
+    user: postgres
+    env_file: .env
