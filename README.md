@@ -58,3 +58,7 @@ create table posts (
     created_at timestamp not null
 );
 ```
+
+## Known Issues
+
+- "undeclared name" for functions in other files for the same module. This is [a known issue](https://github.com/golang/go/issues/32394) with `gopls` due to this workspace is organized as multi-modules.
