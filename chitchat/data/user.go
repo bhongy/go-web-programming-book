@@ -2,7 +2,7 @@ package data
 
 import "time"
 
-// User is the model mapped directly to a row in the users table
+// User models a forum user
 type User struct {
 	ID        int
 	UUID      string
