@@ -24,5 +24,9 @@ func main() {
 
 func index(w http.ResponseWriter, req *http.Request) {
 	logRequest(req)
-	generateHTML(w, nil, []string{"layout", "navbar", "index"})
+	if loggedin, _ := session(req); loggedin {
+		generateHTML(w, nil, []string{"layout", "private.navbar", "index"})
+	} else {
+		generateHTML(w, nil, []string{"layout", "public.navbar", "index"})
+	}
 }
