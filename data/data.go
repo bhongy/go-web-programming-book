@@ -24,5 +24,12 @@ func init() {
 	))
 	if err != nil {
 		log.Fatal(err)
+		return
+	}
+
+	err = Db.Ping()
+	if err != nil {
+		log.Fatal(err)
+		return
 	}
 }
