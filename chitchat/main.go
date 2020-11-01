@@ -18,8 +18,10 @@ func main() {
 		Handler: mux,
 	}
 
-	log.Println("Server is running on port: 8080")
-	server.ListenAndServe()
+	log.Println("Server is running at: https://localhost:8080")
+	if err := server.ListenAndServeTLS("localhost.crt", "localhost.key"); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func index(w http.ResponseWriter, req *http.Request) {
