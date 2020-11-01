@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -14,6 +15,8 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
 
 	mux.HandleFunc("/", index)
+	mux.HandleFunc("/err", err)
+
 	mux.HandleFunc("/login", login)
 	mux.HandleFunc("/logout", logout)
 	mux.HandleFunc("/authenticate", authenticate)
@@ -37,6 +40,20 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GET /err?msg=
+// shows the error message page
+func err(w http.ResponseWriter, r *http.Request) {
+	msg := r.URL.Query().Get("msg")
+	if msg == "" {
+		msg = "(no error message)"
+	}
+	if loggedin, _ := session(r); loggedin {
+		generateHTML(w, msg, []string{"login.layout", "private.navbar", "error"})
+	} else {
+		generateHTML(w, msg, []string{"login.layout", "public.navbar", "error"})
+	}
+}
+
 // GET /login
 // Show the login page
 func login(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +73,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		session := data.Session{UUID: cookie.Value}
 		err = session.Delete()
 		if err != nil {
-			log.Println(err)
+			log.Printf("logout: error deleting session - %v\n", err)
 		}
 		// remove cookie from the client
 		cookie := http.Cookie{
@@ -75,9 +92,9 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 
 	user, err := data.UserByEmail(r.PostFormValue("email"))
 	if err != nil {
-		log.Println("[ERROR] Cannot find user")
-		// redirect to error page ?
-		w.WriteHeader(403)
+		msg := fmt.Sprintf("Cannot find user: %s", r.PostFormValue("email"))
+		redirect := fmt.Sprintf("/err?msg=%s", msg)
+		http.Redirect(w, r, redirect, 302)
 		return
 	}
 
@@ -88,9 +105,9 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 
 	session, err := user.CreateSession()
 	if err != nil {
-		log.Println("[ERROR] Cannot create session")
-		// redirect to error page ?
-		w.WriteHeader(403)
+		log.Println("authenticate: cannot create session")
+		redirect := fmt.Sprintf("/err?msg=%s", "Cannot log in")
+		http.Redirect(w, r, redirect, 302)
 		return
 	}
 
