@@ -10,7 +10,7 @@ import (
 
 // Checks if the session is valid (or still valid)
 func session(r *http.Request) (valid bool, err error) {
-	cookie, err := r.Cookie("_cookie")
+	cookie, err := r.Cookie("_sess")
 	if err == nil {
 		s := data.Session{UUID: cookie.Value}
 		valid, err = s.Check()

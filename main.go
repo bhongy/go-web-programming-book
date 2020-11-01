@@ -15,7 +15,7 @@ func main() {
 
 	mux.HandleFunc("/", index)
 	mux.HandleFunc("/login", login)
-	// mux.HandleFunc("/logout", logout)
+	mux.HandleFunc("/logout", logout)
 	mux.HandleFunc("/authenticate", authenticate)
 
 	server := http.Server{
@@ -47,6 +47,27 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GET /logout
+// Logs the user out
+func logout(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("_sess")
+	// if we have the session cookie, delete it
+	if err != http.ErrNoCookie {
+		session := data.Session{UUID: cookie.Value}
+		err = session.Delete()
+		if err != nil {
+			log.Println(err)
+		}
+		// remove cookie from the client
+		cookie := http.Cookie{
+			Name:   "_sess",
+			MaxAge: -1,
+		}
+		http.SetCookie(w, &cookie)
+	}
+	http.Redirect(w, r, "/", 302)
+}
+
 // POST /authenticate
 // Authenticate the user given the email and password
 func authenticate(w http.ResponseWriter, r *http.Request) {
@@ -74,12 +95,11 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie := http.Cookie{
-		Name:     "_cookie",
+		Name:     "_sess",
 		Value:    session.UUID,
 		HttpOnly: true,
 		Secure:   true,
 	}
 	http.SetCookie(w, &cookie)
-	log.Println("[SUCCESS] Authenticated!")
 	http.Redirect(w, r, "/", 302)
 }
