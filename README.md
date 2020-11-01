@@ -1,8 +1,14 @@
+# A Learning Project from Go Web Programming Book
+
+## Start the server (in Dev Container)
+
 ```sh
 # from project root
-cd chitchat
+go run ./gencert # generate SSL certificate and private key
 go run .
 ```
+
+## Manage PostgreSQL database (from local machine)
 
 ```sh
 # on local machine (from project root)
@@ -58,7 +64,3 @@ create table posts (
     created_at timestamp not null
 );
 ```
-
-## Known Issues
-
-- "undeclared name" for functions in other files for the same module. This is [a known issue](https://github.com/golang/go/issues/32394) with `gopls` due to this workspace is organized as multi-modules.

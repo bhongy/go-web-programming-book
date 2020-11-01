@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bhongy/go-web-programming-book/chitchat/data"
+	"github.com/bhongy/go-web-programming-book/data"
 )
 
 func logRequest(r *http.Request) {
