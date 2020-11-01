@@ -14,9 +14,9 @@ type Session struct {
 // Check returns whether the session is valid in the database
 func (s *Session) Check() (valid bool, err error) {
 	var count int
-	q := Db.QueryRow("SELECT count(id) FROM sessions WHERE uuid = $1", s.UUID)
-	err = q.Scan(&count)
-	if count > 0 {
+	query := "SELECT count(id) FROM sessions WHERE uuid = $1"
+	err = Db.QueryRow(query, s.UUID).Scan(&count)
+	if err == nil && count > 0 {
 		valid = true
 	}
 	return

@@ -3,15 +3,10 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 
 	"github.com/bhongy/go-web-programming-book/data"
 )
-
-func logRequest(r *http.Request) {
-	log.Printf("request: %s\n", r.URL.Path)
-}
 
 // Checks if the session is valid (or still valid)
 func session(r *http.Request) (valid bool, err error) {
