@@ -47,8 +47,7 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	user, err := data.UserByEmail(r.PostFormValue("email"))
 	if err != nil {
 		msg := fmt.Sprintf("Cannot find user: %s", r.PostFormValue("email"))
-		redirect := fmt.Sprintf("/err?msg=%s", msg)
-		http.Redirect(w, r, redirect, 302)
+		redirectToErrorPage(w, r, msg)
 		return
 	}
 
@@ -60,8 +59,7 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 	session, err := user.CreateSession()
 	if err != nil {
 		log.Println("authenticate: cannot create session")
-		redirect := fmt.Sprintf("/err?msg=%s", "Cannot log in")
-		http.Redirect(w, r, redirect, 302)
+		redirectToErrorPage(w, r, "Cannot log in")
 		return
 	}
 
