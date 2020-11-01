@@ -9,13 +9,13 @@ import (
 	"github.com/bhongy/go-web-programming-book/chitchat/data"
 )
 
-func logRequest(req *http.Request) {
-	log.Printf("request: %s\n", req.URL.Path)
+func logRequest(r *http.Request) {
+	log.Printf("request: %s\n", r.URL.Path)
 }
 
 // Checks if the session is valid (or still valid)
-func session(req *http.Request) (valid bool, err error) {
-	cookie, err := req.Cookie("_cookie")
+func session(r *http.Request) (valid bool, err error) {
+	cookie, err := r.Cookie("_cookie")
 	if err == nil {
 		s := data.Session{UUID: cookie.Value}
 		valid, err = s.Check()
