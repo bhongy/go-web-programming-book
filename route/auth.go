@@ -8,6 +8,41 @@ import (
 	"github.com/bhongy/go-web-programming-book/data"
 )
 
+// Signup shows the signup (account registration) page
+// GET /signup
+func Signup(w http.ResponseWriter, r *http.Request) {
+	if loggedin, _ := session(r); loggedin {
+		generateHTML(w, nil, []string{"login.layout", "private.navbar", "signup"})
+	} else {
+		generateHTML(w, nil, []string{"login.layout", "public.navbar", "signup"})
+	}
+}
+
+// CreateAccount registers a new user account
+// GET /account/create
+func CreateAccount(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		msg := fmt.Sprintf("Error parsing form data")
+		redirectToErrorPage(w, r, msg)
+		return
+	}
+
+	user := data.User{
+		Name:  r.PostFormValue("name"),
+		Email: r.PostFormValue("email"),
+	}
+	// plain text password
+	password := r.PostFormValue("password")
+	if err := user.Create(password); err != nil {
+		log.Printf("create account: cannot create user - %v\n", err)
+		redirectToErrorPage(w, r, "Error creating user")
+		return
+	}
+
+	http.Redirect(w, r, "/login", 302)
+}
+
 // Login shows the login page
 // GET /login
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -43,16 +78,20 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 // POST /authenticate
 func Authenticate(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
-
-	user, err := data.UserByEmail(r.PostFormValue("email"))
 	if err != nil {
-		msg := fmt.Sprintf("Cannot find user: %s", r.PostFormValue("email"))
+		msg := fmt.Sprintf("Error parsing form data")
 		redirectToErrorPage(w, r, msg)
 		return
 	}
 
-	if user.Password != r.PostFormValue("password") {
-		http.Redirect(w, r, "/login", 302)
+	user, err := data.UserByEmail(r.PostFormValue("email"))
+	// never tell the user if it was the username or password they got wrong
+	// to prevent attackers from enumerating valid usernames without knowing their passwords
+	// https://crackstation.net/hashing-security.htm
+	// TODO: refactor the line below
+	if err != nil || !user.CheckPassword(r.PostFormValue("password")) {
+		msg := fmt.Sprintf("Invalid username or password")
+		redirectToErrorPage(w, r, msg)
 		return
 	}
 

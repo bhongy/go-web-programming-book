@@ -16,6 +16,9 @@ func main() {
 	mux.HandleFunc("/", route.Index)
 	mux.HandleFunc("/err", route.Err)
 
+	mux.HandleFunc("/signup", route.Signup)
+	mux.HandleFunc("/account/create", route.CreateAccount)
+
 	mux.HandleFunc("/login", route.Login)
 	mux.HandleFunc("/logout", route.Logout)
 	mux.HandleFunc("/authenticate", route.Authenticate)

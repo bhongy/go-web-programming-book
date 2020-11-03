@@ -22,7 +22,7 @@ func (s Session) Check() (valid bool, err error) {
 	return
 }
 
-// Delete removes the session with the UUID from the database
+// Delete the session with the UUID from the database
 func (s Session) Delete() (err error) {
 	query := "DELETE FROM sessions WHERE uuid = $1"
 	_, err = Db.Exec(query, s.UUID)

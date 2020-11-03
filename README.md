@@ -4,7 +4,10 @@
 
 ```sh
 # from project root
-go run ./gencert # generate SSL certificate and private key
+
+# generate SSL certificate and private key
+go run ./gencert
+
 go run .
 ```
 
