@@ -6,8 +6,7 @@
   "settings": { 
 		"terminal.integrated.shell.linux": "/bin/zsh",
 		"go.gopath": "/go",
-		"go.useGoProxyToCheckForToolUpdates": false,
-		"go.useLanguageServer": true
+    "go.useLanguageServer": true
   },
   "extensions": [
 		"golang.Go",
