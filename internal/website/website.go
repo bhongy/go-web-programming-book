@@ -1,4 +1,4 @@
-package route
+package website
 
 import (
 	"net/http"

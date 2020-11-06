@@ -1,4 +1,4 @@
-package route
+package website
 
 import (
 	"fmt"
@@ -19,15 +19,11 @@ func session(r *http.Request) (valid bool, err error) {
 }
 
 func generateHTML(w http.ResponseWriter, data interface{}, filenames []string) {
+	dir := "internal/website/templates"
 	files := make([]string, len(filenames))
 	for i, f := range filenames {
-		files[i] = fmt.Sprintf("internal/templates/%s.html", f)
+		files[i] = fmt.Sprintf("%s/%s.html", dir, f)
 	}
 	templates := template.Must(template.ParseFiles(files...))
 	templates.ExecuteTemplate(w, "layout", data)
-}
-
-func redirectToErrorPage(w http.ResponseWriter, r *http.Request, msg string) {
-	url := fmt.Sprintf("/err?msg=%s", msg)
-	http.Redirect(w, r, url, 302)
 }

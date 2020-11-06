@@ -4,7 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bhongy/go-web-programming-book/internal/route"
+	"github.com/bhongy/go-web-programming-book/internal/api"
+	"github.com/bhongy/go-web-programming-book/internal/website"
 )
 
 func main() {
@@ -13,15 +14,15 @@ func main() {
 	files := http.FileServer(http.Dir("public"))
 	mux.Handle("/static/", http.StripPrefix("/static/", files))
 
-	mux.HandleFunc("/", route.Index)
-	mux.HandleFunc("/err", route.Err)
+	mux.HandleFunc("/", website.Index)
+	mux.HandleFunc("/err", website.Err)
 
-	mux.HandleFunc("/signup", route.Signup)
-	mux.HandleFunc("/account/create", route.CreateAccount)
+	mux.HandleFunc("/signup", website.Signup)
+	mux.HandleFunc("/login", website.Login)
+	mux.HandleFunc("/logout", website.Logout)
 
-	mux.HandleFunc("/login", route.Login)
-	mux.HandleFunc("/logout", route.Logout)
-	mux.HandleFunc("/authenticate", route.Authenticate)
+	mux.HandleFunc("/account/create", api.CreateAccount)
+	mux.HandleFunc("/authenticate", api.Authenticate)
 
 	server := http.Server{
 		Addr:    "localhost:8080",
