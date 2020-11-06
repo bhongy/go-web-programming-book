@@ -6,7 +6,7 @@
 # from project root
 
 # generate SSL certificate and private key
-go run ./gencert
+go run ./internal/gencert
 
 go run .
 ```

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bhongy/go-web-programming-book/route"
+	"github.com/bhongy/go-web-programming-book/internal/route"
 )
 
 func main() {

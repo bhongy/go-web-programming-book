@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bhongy/go-web-programming-book/data"
+	"github.com/bhongy/go-web-programming-book/internal/data"
 )
 
 // Signup shows the signup (account registration) page
