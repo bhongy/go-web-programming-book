@@ -10,19 +10,8 @@ import (
 
 func main() {
 	mux := http.NewServeMux()
-
-	files := http.FileServer(http.Dir("public"))
-	mux.Handle("/static/", http.StripPrefix("/static/", files))
-
-	mux.HandleFunc("/", website.Index)
-	mux.HandleFunc("/err", website.Err)
-
-	mux.HandleFunc("/signup", website.Signup)
-	mux.HandleFunc("/login", website.Login)
-	mux.HandleFunc("/logout", website.Logout)
-
-	mux.HandleFunc("/account/create", api.CreateAccount)
-	mux.HandleFunc("/authenticate", api.Authenticate)
+	mux.Handle("/", website.NewServer())
+	mux.Handle("/api/", http.StripPrefix("/api", api.NewServer()))
 
 	server := http.Server{
 		Addr:    "localhost:8080",

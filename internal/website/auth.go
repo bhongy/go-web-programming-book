@@ -9,7 +9,7 @@ import (
 
 // Signup shows the signup (account registration) page
 // GET /signup
-func Signup(w http.ResponseWriter, r *http.Request) {
+func signup(w http.ResponseWriter, r *http.Request) {
 	if loggedin, _ := session(r); loggedin {
 		generateHTML(w, nil, []string{"login.layout", "private.navbar", "signup"})
 	} else {
@@ -19,7 +19,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 // Login shows the login page
 // GET /login
-func Login(w http.ResponseWriter, r *http.Request) {
+func login(w http.ResponseWriter, r *http.Request) {
 	if loggedin, _ := session(r); loggedin {
 		generateHTML(w, nil, []string{"login.layout", "private.navbar", "login"})
 	} else {
@@ -29,7 +29,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // Logout shows the logout page
 // GET /logout
-func Logout(w http.ResponseWriter, r *http.Request) {
+func logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("_sess")
 	// if we have the session cookie, delete it
 	if err != http.ErrNoCookie {

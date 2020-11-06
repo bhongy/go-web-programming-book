@@ -8,9 +8,9 @@ import (
 	"github.com/bhongy/go-web-programming-book/internal/data"
 )
 
-// CreateAccount registers a new user account
+// createAccount registers a new user account
 // POST /account/create
-func CreateAccount(w http.ResponseWriter, r *http.Request) {
+func createAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		msg := fmt.Sprintf("Error parsing form data")
@@ -33,9 +33,9 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", 302)
 }
 
-// Authenticate the user given the email and password
+// authenticate the user given the email and password
 // POST /authenticate
-func Authenticate(w http.ResponseWriter, r *http.Request) {
+func authenticate(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		msg := fmt.Sprintf("Error parsing form data")
@@ -66,6 +66,9 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 		Value:    session.UUID,
 		HttpOnly: true,
 		Secure:   true,
+		// this must be set to "/" otherwise the browser will not set the cookie
+		// even though `set-cookie` header is sent
+		Path: "/",
 	}
 	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/", 302)
