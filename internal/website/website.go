@@ -23,6 +23,11 @@ func NewServer() http.Handler {
 // index shows the homepage
 // GET /
 func index(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
 	if loggedin, _ := session(r); loggedin {
 		generateHTML(w, nil, []string{"layout", "private.navbar", "index"})
 	} else {
@@ -33,6 +38,11 @@ func index(w http.ResponseWriter, r *http.Request) {
 // err shows the error page given `msg` in the querystring
 // GET /err?msg=
 func err(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
 	msg := r.URL.Query().Get("msg")
 	if msg == "" {
 		msg = "(no error message)"

@@ -10,6 +10,11 @@ import (
 // Signup shows the signup (account registration) page
 // GET /signup
 func signup(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
 	if loggedin, _ := session(r); loggedin {
 		generateHTML(w, nil, []string{"login.layout", "private.navbar", "signup"})
 	} else {
@@ -20,6 +25,11 @@ func signup(w http.ResponseWriter, r *http.Request) {
 // Login shows the login page
 // GET /login
 func login(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
 	if loggedin, _ := session(r); loggedin {
 		generateHTML(w, nil, []string{"login.layout", "private.navbar", "login"})
 	} else {
@@ -30,6 +40,11 @@ func login(w http.ResponseWriter, r *http.Request) {
 // Logout shows the logout page
 // GET /logout
 func logout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+
 	cookie, err := r.Cookie("_sess")
 	// if we have the session cookie, delete it
 	if err != http.ErrNoCookie {

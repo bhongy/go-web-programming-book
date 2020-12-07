@@ -11,6 +11,11 @@ import (
 // createAccount registers a new user account
 // POST /account/create
 func createAccount(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
 	err := r.ParseForm()
 	if err != nil {
 		msg := fmt.Sprintf("Error parsing form data")
@@ -36,6 +41,11 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 // authenticate the user given the email and password
 // POST /authenticate
 func authenticate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.NotFound(w, r)
+		return
+	}
+
 	err := r.ParseForm()
 	if err != nil {
 		msg := fmt.Sprintf("Error parsing form data")
