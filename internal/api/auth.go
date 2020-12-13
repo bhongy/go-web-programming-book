@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/bhongy/go-web-programming-book/internal/data"
+	"github.com/bhongy/go-web-programming-book/internal/website"
 )
 
 // createAccount registers a new user account
@@ -19,7 +20,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		msg := fmt.Sprintf("Error parsing form data")
-		redirectToErrorPage(w, r, msg)
+		website.RedirectToErrorPage(w, r, msg)
 		return
 	}
 
@@ -31,7 +32,7 @@ func createAccount(w http.ResponseWriter, r *http.Request) {
 	password := r.PostFormValue("password")
 	if err := user.Create(password); err != nil {
 		log.Printf("create account: cannot create user - %v\n", err)
-		redirectToErrorPage(w, r, "Error creating user")
+		website.RedirectToErrorPage(w, r, "Error creating user")
 		return
 	}
 
@@ -49,7 +50,7 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		msg := fmt.Sprintf("Error parsing form data")
-		redirectToErrorPage(w, r, msg)
+		website.RedirectToErrorPage(w, r, msg)
 		return
 	}
 
@@ -60,14 +61,14 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	// TODO: refactor the line below
 	if err != nil || !user.CheckPassword(r.PostFormValue("password")) {
 		msg := fmt.Sprintf("Invalid username or password")
-		redirectToErrorPage(w, r, msg)
+		website.RedirectToErrorPage(w, r, msg)
 		return
 	}
 
 	session, err := user.CreateSession()
 	if err != nil {
 		log.Println("authenticate: cannot create session")
-		redirectToErrorPage(w, r, "Cannot log in")
+		website.RedirectToErrorPage(w, r, "Cannot log in")
 		return
 	}
 
@@ -82,9 +83,4 @@ func authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/", 302)
-}
-
-func redirectToErrorPage(w http.ResponseWriter, r *http.Request, msg string) {
-	url := fmt.Sprintf("/err?msg=%s", msg)
-	http.Redirect(w, r, url, 302)
 }

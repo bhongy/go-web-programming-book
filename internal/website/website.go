@@ -1,6 +1,7 @@
 package website
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bhongy/go-web-programming-book/internal/data"
@@ -20,6 +21,12 @@ func NewServer() http.Handler {
 	mux.HandleFunc("/logout", logout)
 
 	return mux
+}
+
+// RedirectToErrorPage redirects the request to the error page
+func RedirectToErrorPage(w http.ResponseWriter, r *http.Request, msg string) {
+	url := fmt.Sprintf("/err?msg=%s", msg)
+	http.Redirect(w, r, url, 302)
 }
 
 // index shows the homepage
