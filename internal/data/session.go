@@ -15,17 +15,6 @@ type Session struct {
 	CreatedAt time.Time
 }
 
-// check returns whether the session is valid in the database
-func (s *Session) check() (valid bool, err error) {
-	var count int
-	query := "SELECT count(id) FROM sessions WHERE uuid = $1"
-	err = Db.QueryRow(query, s.UUID).Scan(&count)
-	if err == nil && count > 0 {
-		valid = true
-	}
-	return
-}
-
 // Delete the session with the UUID from the database
 func (s *Session) Delete() (err error) {
 	query := "DELETE FROM sessions WHERE uuid = $1"
@@ -49,14 +38,28 @@ func (s *Session) User() (u User, err error) {
 	return
 }
 
-// CheckSession checks the request whether the session is still valid
+// CheckSession
+//   checks the request whether the session is still valid
+//   returns the session if the session is still valid
 func CheckSession(r *http.Request) (s Session, err error) {
 	cookie, err := r.Cookie("_sess")
-	if err == nil {
-		s.UUID = cookie.Value
-		if ok, _ := s.check(); !ok {
-			err = errors.New("Invalid session")
-		}
+	if err != nil {
+		return
+	}
+	uuid := cookie.Value
+	query := `
+		SELECT
+			id, uuid, email, user_id, created_at
+		FROM
+			sessions
+		WHERE
+			uuid = $1
+	`
+	err = Db.
+		QueryRow(query, uuid).
+		Scan(&s.ID, &s.UUID, &s.Email, &s.UserID, &s.CreatedAt)
+	if s.ID == 0 {
+		err = errors.New("Invalid session")
 	}
 	return
 }

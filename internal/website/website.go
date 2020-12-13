@@ -20,6 +20,8 @@ func NewServer() http.Handler {
 	mux.HandleFunc("/login", login)
 	mux.HandleFunc("/logout", logout)
 
+	mux.HandleFunc("/thread/new", newThread)
+
 	return mux
 }
 
@@ -37,10 +39,15 @@ func index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	threads, err := data.Threads()
+	if err != nil {
+		RedirectToErrorPage(w, r, "Cannot get threads")
+		return
+	}
 	if _, err := data.CheckSession(r); err == nil {
-		generateHTML(w, nil, []string{"layout", "private.navbar", "index"})
+		generateHTML(w, threads, []string{"layout", "private.navbar", "index"})
 	} else {
-		generateHTML(w, nil, []string{"layout", "public.navbar", "index"})
+		generateHTML(w, threads, []string{"layout", "public.navbar", "index"})
 	}
 }
 

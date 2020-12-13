@@ -29,7 +29,7 @@ func (t *Thread) Creator() (u User) {
 
 // CreatedAtDate formats CreateAt data to display nicely on the screen
 func (t *Thread) CreatedAtDate() string {
-	return t.CreatedAt.Format("Jan 1, 1970 at 1:00am")
+	return t.CreatedAt.Format("Jan 2, 2006 at 3:04pm")
 }
 
 // NumReplies returns the number of posts in a thread
