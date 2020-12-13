@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bhongy/go-web-programming-book/internal/data"
@@ -29,10 +30,10 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	topic := r.PostFormValue("topic")
-	if _, err := user.CreateThread(topic); err != nil {
+	if thread, err := user.CreateThread(topic); err != nil {
 		website.RedirectToErrorPage(w, r, "Cannot create thread")
 	} else {
-		// TODO: redirect to the created thread
-		http.Redirect(w, r, "/", 302)
+		location := fmt.Sprintf("/thread/read?id=%s", thread.UUID)
+		http.Redirect(w, r, location, 302)
 	}
 }

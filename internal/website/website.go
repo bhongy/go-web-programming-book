@@ -21,6 +21,7 @@ func NewServer() http.Handler {
 	mux.HandleFunc("/logout", logout)
 
 	mux.HandleFunc("/thread/new", newThread)
+	mux.HandleFunc("/thread/read", readThread)
 
 	return mux
 }

@@ -1,6 +1,9 @@
 package data
 
-import "time"
+import (
+	"log"
+	"time"
+)
 
 // Thread models a discussion thread for the forum
 type Thread struct {
@@ -21,9 +24,12 @@ func (t *Thread) Creator() (u User) {
 		WHERE
 			id = $1
 	`
-	Db.
+	err := Db.
 		QueryRow(query, t.UserID).
 		Scan(&u.ID, &u.UUID, &u.Name, &u.Email, &u.CreatedAt)
+	if err != nil {
+		log.Printf("Thread.Creator: cannot load user - %v\n", err)
+	}
 	return
 }
 
