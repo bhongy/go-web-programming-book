@@ -97,6 +97,32 @@ func (u *User) CreateThread(topic string) (t Thread, err error) {
 	return
 }
 
+// CreatePost creates a new thread for the user
+func (u *User) CreatePost(t Thread, body string) (p Post, err error) {
+	query := `
+		INSERT INTO posts (uuid, body, user_id, thread_id, created_at)
+		VALUES($1, $2, $3, $4, $5)
+		RETURNING
+			id,
+			uuid,
+			body,
+			user_id,
+			thread_id,
+			created_at
+	`
+	err = Db.
+		QueryRow(query, createUUID(), body, u.ID, t.ID, time.Now()).
+		Scan(
+			&p.ID,
+			&p.UUID,
+			&p.Body,
+			&p.UserID,
+			&p.ThreadID,
+			&p.CreatedAt,
+		)
+	return
+}
+
 // UserByEmail returns a single user given the email
 func UserByEmail(email string) (u User, err error) {
 	query := `
