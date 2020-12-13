@@ -2,6 +2,8 @@ package website
 
 import (
 	"net/http"
+
+	"github.com/bhongy/go-web-programming-book/internal/data"
 )
 
 func NewServer() http.Handler {
@@ -28,7 +30,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if loggedin, _ := session(r); loggedin {
+	if _, err := data.CheckSession(r); err == nil {
 		generateHTML(w, nil, []string{"layout", "private.navbar", "index"})
 	} else {
 		generateHTML(w, nil, []string{"layout", "public.navbar", "index"})
@@ -47,7 +49,7 @@ func err(w http.ResponseWriter, r *http.Request) {
 	if msg == "" {
 		msg = "(no error message)"
 	}
-	if loggedin, _ := session(r); loggedin {
+	if _, err := data.CheckSession(r); err == nil {
 		generateHTML(w, msg, []string{"login.layout", "private.navbar", "error"})
 	} else {
 		generateHTML(w, msg, []string{"login.layout", "public.navbar", "error"})

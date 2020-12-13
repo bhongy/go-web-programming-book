@@ -15,7 +15,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if loggedin, _ := session(r); loggedin {
+	if _, err := data.CheckSession(r); err == nil {
 		generateHTML(w, nil, []string{"login.layout", "private.navbar", "signup"})
 	} else {
 		generateHTML(w, nil, []string{"login.layout", "public.navbar", "signup"})
@@ -30,7 +30,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if loggedin, _ := session(r); loggedin {
+	if _, err := data.CheckSession(r); err == nil {
 		generateHTML(w, nil, []string{"login.layout", "private.navbar", "login"})
 	} else {
 		generateHTML(w, nil, []string{"login.layout", "public.navbar", "login"})

@@ -1,6 +1,10 @@
 package data
 
-import "time"
+import (
+	"errors"
+	"net/http"
+	"time"
+)
 
 // Session models a login session of a user
 type Session struct {
@@ -11,8 +15,8 @@ type Session struct {
 	CreatedAt time.Time
 }
 
-// Check returns whether the session is valid in the database
-func (s Session) Check() (valid bool, err error) {
+// check returns whether the session is valid in the database
+func (s Session) check() (valid bool, err error) {
 	var count int
 	query := "SELECT count(id) FROM sessions WHERE uuid = $1"
 	err = Db.QueryRow(query, s.UUID).Scan(&count)
@@ -26,5 +30,17 @@ func (s Session) Check() (valid bool, err error) {
 func (s Session) Delete() (err error) {
 	query := "DELETE FROM sessions WHERE uuid = $1"
 	_, err = Db.Exec(query, s.UUID)
+	return
+}
+
+// CheckSession checks the request whether the session is still valid
+func CheckSession(r *http.Request) (s Session, err error) {
+	cookie, err := r.Cookie("_sess")
+	if err == nil {
+		s.UUID = cookie.Value
+		if ok, _ := s.check(); !ok {
+			err = errors.New("Invalid session")
+		}
+	}
 	return
 }
