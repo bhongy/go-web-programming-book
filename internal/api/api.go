@@ -9,6 +9,7 @@ func NewServer() http.Handler {
 	mux.HandleFunc("/authenticate", authenticate)
 
 	mux.HandleFunc("/thread/create", createThread)
+	mux.HandleFunc("/post/create", createPost)
 
 	return mux
 }

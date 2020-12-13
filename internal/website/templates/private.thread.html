@@ -20,10 +20,10 @@
 
 <div class="panel panel-info">
   <div class="panel-body">
-    <form role="form" action="/api/thread/post" method="POST">
+    <form role="form" action="/api/post/create" method="POST">
       <div class="form-group">
         <textarea class="form-control" name="body" id="body" placeholder="Write your reply here" rows="3"></textarea>
-        <input type="hidden" name="uuid" value="{{ .UUID }}">
+        <input type="hidden" name="thread_uuid" value="{{ .UUID }}">
         <br/>
         <button class="btn btn-primary pull-right" type="submit">Reply</button>
       </div>
