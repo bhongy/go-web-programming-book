@@ -52,32 +52,14 @@ func (u *User) Create(plaintextPassword string) (err error) {
 	}
 
 	query := `
-		INSERT INTO users (
-			uuid,
-			name,
-			email,
-			password,
-			created_at
-		)
+		INSERT INTO users (uuid, name, email, password, created_at)
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING
-			id,
-			uuid,
-			created_at
+			id, uuid, created_at
 	`
 	err = Db.
-		QueryRow(query,
-			createUUID(),
-			u.Name,
-			u.Email,
-			p,
-			time.Now(),
-		).
-		Scan(
-			&u.ID,
-			&u.UUID,
-			&u.CreatedAt,
-		)
+		QueryRow(query, createUUID(), u.Name, u.Email, p, time.Now()).
+		Scan(&u.ID, &u.UUID, &u.CreatedAt)
 	return
 }
 
@@ -93,19 +75,25 @@ func (u *User) CreateSession() (s Session, err error) {
 		INSERT INTO sessions (uuid, email, user_id, created_at)
 		VALUES($1, $2, $3, $4)
 		RETURNING
-			id,
-			uuid,
-			email,
-			user_id,
-			created_at
+			id, uuid, email, user_id, created_at
 	`
-	err = Db.QueryRow(query, createUUID(), u.Email, u.ID, u.CreatedAt).Scan(
-		&s.ID,
-		&s.UUID,
-		&s.Email,
-		&s.UserID,
-		&s.CreatedAt,
-	)
+	err = Db.
+		QueryRow(query, createUUID(), u.Email, u.ID, time.Now()).
+		Scan(&s.ID, &s.UUID, &s.Email, &s.UserID, &s.CreatedAt)
+	return
+}
+
+// CreateThread creates a new thread for the user
+func (u *User) CreateThread(topic string) (t Thread, err error) {
+	query := `
+		INSERT INTO threads (uuid, topic, user_id, created_at)
+		VALUES($1, $2, $3, $4)
+		RETURNING
+			id, uuid, topic, user_id, created_at
+	`
+	err = Db.
+		QueryRow(query, createUUID(), topic, u.ID, time.Now()).
+		Scan(&t.ID, &t.UUID, &t.Topic, &t.UserID, &t.CreatedAt)
 	return
 }
 
@@ -119,8 +107,10 @@ func UserByEmail(email string) (u User, err error) {
 			email,
 			password,
 			created_at
-		FROM users
-		WHERE email = $1
+		FROM
+			users
+		WHERE
+			email = $1
 	`
 	err = Db.QueryRow(query, email).Scan(
 		&u.ID,

@@ -16,7 +16,7 @@ type Session struct {
 }
 
 // check returns whether the session is valid in the database
-func (s Session) check() (valid bool, err error) {
+func (s *Session) check() (valid bool, err error) {
 	var count int
 	query := "SELECT count(id) FROM sessions WHERE uuid = $1"
 	err = Db.QueryRow(query, s.UUID).Scan(&count)
@@ -27,9 +27,25 @@ func (s Session) check() (valid bool, err error) {
 }
 
 // Delete the session with the UUID from the database
-func (s Session) Delete() (err error) {
+func (s *Session) Delete() (err error) {
 	query := "DELETE FROM sessions WHERE uuid = $1"
 	_, err = Db.Exec(query, s.UUID)
+	return
+}
+
+// User returns the user from the session
+func (s *Session) User() (u User, err error) {
+	query := `
+		SELECT
+			id, uuid, name, email, created_at
+		FROM
+			users
+		WHERE
+			id = $1
+	`
+	err = Db.
+		QueryRow(query, s.UserID).
+		Scan(&u.ID, &u.UUID, &u.Name, &u.Email, &u.CreatedAt)
 	return
 }
 
