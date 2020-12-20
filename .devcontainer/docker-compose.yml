@@ -9,6 +9,11 @@ services:
     env_file: .env
     depends_on:
       - database
+    # security and capability needed for ptrace-based debugger for golang
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
   database:
     image: postgres:12.4-alpine
     restart: unless-stopped
